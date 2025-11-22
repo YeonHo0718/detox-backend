@@ -35,8 +35,8 @@ Your goal is to uncover the user's hidden emotions through "Tail Questions" (Pro
 
 ## FORMAT
 {
-  "question": "Your follow-up question here",
-  "options": ["A: Example Option A", "B: Example Option B", "C: Example Option C"]
+  "question": "Your follow-up question here in Korean",
+  "options": ["A: Example Option A in Korean", "B: Example Option B in Korean", "C: Example Option C in Korean"]
 }
 
 ## TONE
@@ -76,7 +76,7 @@ Always imply: "짧은 설문이 끝나면 앱을 사용하게 해드릴게요."
 ## OUTPUT FORMAT (JSON ONLY)
 {
   "question": "Generated Question in Korean",
-  "options": ["A: Option 1", "B: Option 2", "C: Option 3"]
+  "options": ["A: Option 1 in Korean", "B: Option 2 in Korean", "C: Option 3 in Korean"]
 }
 `;
 
@@ -98,9 +98,9 @@ Your goal is to provide a **final closing advice** based on the conversation his
 
 ## OUTPUT FORMAT (JSON ONLY)
 {
-  "popup_title": "A short, punchy headline (under 15 chars). It should grab attention. (e.g., "무의식의 버튼을 멈춰요!", "많이 지치셨군요 토닥토닥", "잠깐, 잊으셨나요?")",
-  "advice": "Warm but firm advice connecting to their vision.",
-  "action": "A specific, simple alternative action to do right now."
+  "popup_title": "A short, punchy headline in Korean(under 15 chars). It should grab attention. (e.g., "무의식의 버튼을 멈춰요!", "많이 지치셨군요 토닥토닥", "잠깐, 잊으셨나요?")",
+  "advice": "Warm but firm advice connecting to their vision in Korean.",
+  "action": "A specific, simple alternative action to do right now in Korean."
 }
 
 ## TONE
