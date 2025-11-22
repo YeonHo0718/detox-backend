@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    /* 기본 설정 */
+    "target": "es2016" /* Node.js 버전에 맞춰 JS로 변환 */,
+    "module": "commonjs" /* Node.js 기본 모듈 시스템 사용 */,
+    "rootDir": "." /* TypeScript 소스 파일 위치 */,
+    "outDir": "./dist" /* 컴파일된 JS 파일이 저장될 위치 */,
+
+    /* 엄격한 타입 검사 (버그 방지) */
+    "strict": true,
+    "esModuleInterop": true /* CommonJS 모듈 호환성 허용 */,
+    "skipLibCheck": true /* 라이브러리 정의 파일 검사 건너뛰기 (속도 향상) */,
+    "forceConsistentCasingInFileNames": true /* 파일명 대소문자 구분 */
+  },
+  "include": ["src/**/*"] /* src 폴더 내의 모든 파일 컴파일 */,
+  "exclude": ["node_modules"] /* node_modules 제외 */
+}
