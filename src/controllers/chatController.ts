@@ -11,7 +11,6 @@ const KEY = process.env.OPENAI_API_KEY || "";
 console.log("OPENAI_API_KEY:", KEY ? "Loaded" : "Not Found");
 const client = new OpenAI({ apiKey: KEY });
 
-// ✅ 타입 정의 (클라이언트와 약속된 규격)
 interface ChatHistory {
   role: "user" | "assistant" | "system";
   content: string;
@@ -76,19 +75,21 @@ export const getFirstQuestion = async (req: Request, res: Response) => {
       appName: string;
       userVision: string;
     };
-    // 1️⃣ GPT에게 보낼 메시지 구성
+    console.log(req.body);
+
+    // 1. GPT에게 보낼 메시지 구성
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       { role: "system", content: FIRST_QUESTION_PROMPT(appName, userVision) },
     ];
 
-    // 2️⃣ OpenAI API 호출
+    // 2. OpenAI API 호출
     const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini", // 해커톤용 추천 (빠르고 저렴함) 또는 'gpt-3.5-turbo'
+      model: "gpt-4o-mini", // 해커톤용 (빠르고 저렴함) 또는 'gpt-3.5-turbo'
       messages: messages,
-      response_format: { type: "json_object" }, // ★ 중요: JSON 강제 모드
+      response_format: { type: "json_object" }, // 중요: JSON 강제 모드
       temperature: 0.7, // 창의성 조절
     });
-    // 3️⃣ 응답 파싱
+    // 3. 응답 파싱
     const aiContent = completion.choices[0].message.content;
     if (!aiContent) {
       throw new Error("AI 응답이 비어있습니다.");
@@ -97,7 +98,7 @@ export const getFirstQuestion = async (req: Request, res: Response) => {
     // JSON 문자열을 객체로 변환
     const parsedData: NextQuestionResponse = JSON.parse(aiContent);
     parsedData.history = [{ role: "assistant", content: parsedData.question }];
-    // 4️⃣ 클라이언트에 응답 전송
+    // 4. 클라이언트에 응답 전송
     res.status(200).json(parsedData);
   } catch (error) {
     console.error("GPT API Error:", error);
@@ -115,8 +116,9 @@ export const getNextQuestion = async (req: Request, res: Response) => {
       selectedAnswer,
       history = [],
     } = req.body as NextQuestionRequest;
+    console.log(req.body);
 
-    // 2️⃣ GPT에게 보낼 메시지 구성
+    // 1. GPT에게 보낼 메시지 구성
     // 시스템 프롬프트 + 이전 대화(History) + 이번 턴(User Answer)
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       { role: "system", content: TAIL_QUESTION_PROMPT(appName, userVision) },
@@ -125,15 +127,15 @@ export const getNextQuestion = async (req: Request, res: Response) => {
       { role: "user", content: selectedAnswer }, // 이번 유저 답변
     ];
 
-    // 3️⃣ OpenAI API 호출
+    // 2. OpenAI API 호출
     const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini", // 해커톤용 추천 (빠르고 저렴함) 또는 'gpt-3.5-turbo'
+      model: "gpt-4o-mini", // 해커톤용 (빠르고 저렴함) 또는 'gpt-3.5-turbo'
       messages: messages,
-      response_format: { type: "json_object" }, // ★ 중요: JSON 강제 모드
+      response_format: { type: "json_object" }, // 중요: JSON 강제 모드
       temperature: 0.7, // 창의성 조절
     });
 
-    // 4️⃣ 응답 파싱
+    // 3. 응답 파싱
     const aiContent = completion.choices[0].message.content;
 
     if (!aiContent) {
@@ -148,10 +150,7 @@ export const getNextQuestion = async (req: Request, res: Response) => {
       { role: "user", content: selectedAnswer },
     ];
 
-    // 5️⃣ (DB 저장 포인트) 여기서 이번 대화 내용을 DB에 저장하면 좋습니다.
-    // await ChatLog.save({ userId, q: parsedData.nextQuestion, a: selectedAnswer ... });
-
-    // 6️⃣ 클라이언트에 응답 전송
+    // 4. 클라이언트에 응답 전송
     res.status(200).json(parsedData);
   } catch (error) {
     console.error("GPT API Error:", error);
@@ -165,8 +164,9 @@ export const getNextQuestion = async (req: Request, res: Response) => {
 export const getAdvice = async (req: Request, res: Response) => {
   try {
     const { userId, history, userVision, appName } = req.body;
+    console.log(req.body);
 
-    // 2. GPT에게 보낼 메시지 구성
+    // 1. GPT에게 보낼 메시지 구성
     // [시스템 프롬프트] -> [지금까지의 대화 내역] -> [최종 지시: "이제 조언해줘"]
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       { role: "system", content: ADVICE_SYSTEM_PROMPT(appName, userVision) },
@@ -178,7 +178,7 @@ export const getAdvice = async (req: Request, res: Response) => {
       }, // Trigger Message
     ];
 
-    // 3. GPT 호출
+    // 2. GPT 호출
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: messages,
@@ -191,7 +191,7 @@ export const getAdvice = async (req: Request, res: Response) => {
 
     const adviceData = JSON.parse(aiContent);
 
-    // 5. 응답 전송
+    // 3. 응답 전송
     res.status(200).json(adviceData);
   } catch (error) {
     console.error("Advice Error:", error);
